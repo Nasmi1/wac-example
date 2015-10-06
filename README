@@ -1,0 +1,50 @@
+This repository contains the data and python scripts for running the evaluations found in our IWCS 2015 and ACL 2015 papers (bib below). 
+
+The model of reference resolution is called "Words as Classifiers" for reference resolution (WACrr). 
+
+Prerequisites:
+python2.7
+numpy
+scipy
+nltk (stem.snowmall.GermanStemmer)
+sqlite3
+sklearn (linear_model, preprocessing.StandardScaler)
+
+For IWCS:
+cd IWCS
+python wac_rr_IWCS.py
+Note: this will only perform the evaluation using speech; it will not interpolate with gaze and gesture
+
+For ACL:
+cd ACL
+python wac_rr_ACL.py
+
+
+
+@InProceedings{kennington-dia-schlangen:2015:IWCS2015,
+  author    = {Kennington, Casey  and  Dia, Livia  and  Schlangen, David},
+  title     = {A Discriminative Model for Perceptually-Grounded Incremental Reference Resolution},
+  booktitle = {Proceedings of the 11th International Conference on Computational Semantics},
+  month     = {April},
+  year      = {2015},
+  address   = {London, UK},
+  publisher = {Association for Computational Linguistics},
+  pages     = {195--205},
+  url       = {http://www.aclweb.org/anthology/W15-0124}
+}
+
+
+
+
+@InProceedings{kennington-schlangen:2015:ACL-IJCNLP,
+  author    = {Kennington, Casey  and  Schlangen, David},
+  title     = {Simple Learning and Compositional Application of Perceptually Grounded Word Meanings for Incremental Reference Resolution},
+  booktitle = {Proceedings of the 53rd Annual Meeting of the Association for Computational Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)},
+  month     = {July},
+  year      = {2015},
+  address   = {Beijing, China},
+  publisher = {Association for Computational Linguistics},
+  pages     = {292--301},
+  url       = {http://www.aclweb.org/anthology/P15-1029}
+}
+
