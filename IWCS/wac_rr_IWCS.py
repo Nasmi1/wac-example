@@ -53,6 +53,7 @@ def get_features(sample):
     as x,y coordiantes of the object's calcuated centroid, and how it has been skewed.
     
     '''
+    #print "sample", sample
     features = {}
     f_name = 'f{}'
     f_ind = 1
@@ -75,7 +76,8 @@ def get_features(sample):
     if sample[10] == 'bottom-skewed': features['v_bs'] = 1.0
     else: features['v_bs'] = 0.0
     if sample[10] == 'symmetric': features['v_s'] = 1.0
-    else: features['v_s'] = 0.0           
+    else: features['v_s'] = 0.0    
+    #print "FEATURES", features       
     return features
 
 
@@ -86,6 +88,7 @@ def train(training_data):
     The training data is a list of dictionaries and class labels (True or False). The dictionary values are the raw values
     the features for the logreg classifier.
     '''
+    #print "training_data", training_data[:3]
     x = []
     y = []
     for row in training_data:
@@ -124,14 +127,15 @@ def process_words(words, eid, utt, max_negs=5):
         elif len(neg_samples) < max_negs: neg_samples.append(r)
         if len(neg_samples) == max_negs and pos_sample is not None: break
     if pos_sample is None: return
-    pos_features = get_features(pos_sample)      
+    pos_features = get_features(pos_sample)   
     for word in utt.strip().split():
         if word not in words:
             words[word] = []
         words[word].append((pos_features,True))
         for neg_sample in neg_samples:
             neg_features = get_features(neg_sample)
-            words[word].append((neg_features,False))    
+            words[word].append((neg_features,False))
+   
 
 
 def process_eval_words(objects, eid):
@@ -140,7 +144,8 @@ def process_eval_words(objects, eid):
     '''
     raw_data = get_raw_data(eid)
     for row in raw_data:
-        objects[row[1]] = get_features(row)      
+        objects[row[1]] = get_features(row)
+    #print "OBJECTS", objects      
     return objects
 
 def argmax(dist):
@@ -174,7 +179,8 @@ def classify(utt, word_classifiers, objects):
         prob_dists = {}
         if word in word_classifiers: #just ignore words we don't know anything about
             for obj in objects:
-                prob_dist = word_classifiers[word].predict_proba(objects[obj].values())
+                t = numpy.reshape(objects[obj].values(), (1,-1))
+                prob_dist = word_classifiers[word].predict_proba(t)
                 #prob_dist = word_classifiers[word].prob_classify(objects[obj])
                 prob_dists[obj] = prob_dist[0][1]
                 #prob_dists[obj] = prob_dist.prob(True)
@@ -213,12 +219,13 @@ for i in range(1,num_folds+1):
         words = {}  # elements of type ({'feature_name':feature_value}:class_label)
         j = 1.0    
         for eid in eids:
-	    utt = get_words(get_speech(eid,source))
+            utt = get_words(get_speech(eid,source))
             if j > max_eps: break
             if is_training_data(j, i):
                 process_words(words, eid, utt)
             j += 1.0
-        
+  
+
         #train
         word_classifiers = {}
         for word in words:
@@ -229,7 +236,7 @@ for i in range(1,num_folds+1):
         for eid in eids:
             if j > max_eps: break
             if not is_training_data(j, i):
-        	utt = get_words(get_speech(eid,source))
+                utt = get_words(get_speech(eid,source))
                 selected = get_selected_piece(eid)
                 objects = {}
                 process_eval_words(objects, eid)
